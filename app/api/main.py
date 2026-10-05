@@ -33,16 +33,10 @@ class Transaction(BaseModel):
     is_foreign_transaction: int
     num_transactions_today: int
 
-# ─────────────────────────────────────────────
-# Health check — public, no auth needed
-# ─────────────────────────────────────────────
 @app.get("/")
 def health_check():
     return {"status": "Fraud Detection API is running"}
 
-# ─────────────────────────────────────────────
-# Login endpoint — returns a JWT token
-# ─────────────────────────────────────────────
 @app.post("/token")
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user=authenticate_user(form_data.username, form_data.password)
@@ -54,9 +48,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     access_token = create_access_token(data={"sub": user["username"]})
     return {"access_token": access_token, "token_type": "bearer"}
 
-# ─────────────────────────────────────────────
-# Predict — protected, requires valid token
-# ─────────────────────────────────────────────
+
 @app.post("/predict")
 def predict(
     transaction:Transaction,
@@ -102,9 +94,6 @@ def predict(
         "processed_by": current_user
     }
 
-# ─────────────────────────────────────────────
-# History — protected, requires valid token
-# ─────────────────────────────────────────────
 @app.get("/history")
 def get_history(
     db: Session=Depends(get_db),
