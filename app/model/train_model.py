@@ -6,9 +6,7 @@ from sklearn.metrics import classification_report
 import joblib
 import os
 
-# ─────────────────────────────────────────────
-# STEP 1: Create a fake but realistic dataset
-# ─────────────────────────────────────────────
+
 print("Generating dataset...")
 
 np.random.seed(42)
@@ -25,10 +23,6 @@ data={
 
 df=pd.DataFrame(data)
 
-# ─────────────────────────────────────────────
-# STEP 2: Create the fraud label
-# Fraud is rare — only ~5% of transactions
-# ─────────────────────────────────────────────
 fraud_condition=(
     (df["transaction_amount"] > 300) &
     (df["is_foreign_transaction"] == 1) &
@@ -42,9 +36,7 @@ print(f"Total transactions : {len(df)}")
 print(f"Fraudulent         : {df['is_fraud'].sum()}")
 print(f"Legitimate         : {(df['is_fraud'] == 0).sum()}")
 
-# ─────────────────────────────────────────────
-# STEP 3: Train the model
-# ─────────────────────────────────────────────
+
 print("\nTraining model...")
 
 X=df.drop("is_fraud", axis=1)
@@ -57,14 +49,11 @@ X_train, X_test, y_train, y_test=train_test_split(
 model=RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
-# ─────────────────────────────────────────────
-# STEP 4: Evaluate the model
-# ─────────────────────────────────────────────
 print("\nModel Performance:")
 y_pred=model.predict(X_test)
 print(classification_report(y_test, y_pred))
 
-# ─────────────────────────────────────────────
+
 # STEP 5: Save the model to a file
 # ─────────────────────────────────────────────
 os.makedirs("app/model", exist_ok=True)
