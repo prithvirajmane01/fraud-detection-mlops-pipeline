@@ -4,24 +4,16 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
-# ─────────────────────────────────────────────
-# Security configuration
-# SECRET_KEY is used to sign tokens — keep this private
-# ─────────────────────────────────────────────
+
 SECRET_KEY = "fraud-detection-super-secret-key-2024"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# Password hashing setup
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# This tells FastAPI where clients send their token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# ─────────────────────────────────────────────
-# Fake user database
-# In production this would be a real database table
-# ─────────────────────────────────────────────
+
 FAKE_USERS = {
     "admin": {
         "username": "admin",
@@ -30,9 +22,7 @@ FAKE_USERS = {
     }
 }
 
-# ─────────────────────────────────────────────
-# Helper functions
-# ─────────────────────────────────────────────
+
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
