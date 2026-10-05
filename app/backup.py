@@ -4,9 +4,6 @@ import subprocess
 from datetime import datetime
 import json
 
-# ─────────────────────────────────────────────
-# Configuration
-# ─────────────────────────────────────────────
 BACKUP_DIR="backups"
 MODEL_PATH="app/model/fraud_model.pkl"
 DB_NAME="fraud_detection"
@@ -33,9 +30,7 @@ def extract_db_password(url):
 
 DB_PASSWORD=extract_db_password(DATABASE_URL)
 
-# ─────────────────────────────────────────────
-# Create timestamped backup folder
-# ─────────────────────────────────────────────
+
 def create_backup_folder():
     timestamp=datetime.now().strftime("%Y%m%d_%H%M%S")
     folder=os.path.join(BACKUP_DIR, f"backup_{timestamp}")
@@ -43,9 +38,6 @@ def create_backup_folder():
     print(f"Backup folder created: {folder}")
     return folder, timestamp
 
-# ─────────────────────────────────────────────
-# Backup the ML model file
-# ─────────────────────────────────────────────
 def backup_model(backup_folder):
     print("\nBacking up model...")
     if os.path.exists(MODEL_PATH):
@@ -58,9 +50,6 @@ def backup_model(backup_folder):
         print(f"Model file not found at {MODEL_PATH}")
         return False
 
-# ─────────────────────────────────────────────
-# Backup the MySQL database using mysqldump
-# ─────────────────────────────────────────────
 def backup_database(backup_folder):
     print("\nBacking up database...")
     dump_path=os.path.join(backup_folder, f"{DB_NAME}.sql")
@@ -95,9 +84,8 @@ def backup_database(backup_folder):
         print("mysqldump not found — adding MySQL to PATH first")
         return False
 
-# ─────────────────────────────────────────────
-# Save a backup manifest (summary of what was backed up)
-# ─────────────────────────────────────────────
+
+
 def save_manifest(backup_folder, timestamp, model_ok, db_ok):
     manifest={
         "timestamp":timestamp,
@@ -113,9 +101,7 @@ def save_manifest(backup_folder, timestamp, model_ok, db_ok):
     print(f"\nManifest saved: {path}")
     return manifest
 
-# ─────────────────────────────────────────────
-# Clean up old backups — keep only last 7
-# ─────────────────────────────────────────────
+
 def cleanup_old_backups(keep=7):
     if not os.path.exists(BACKUP_DIR):
         return
@@ -132,9 +118,6 @@ def cleanup_old_backups(keep=7):
             shutil.rmtree(path)
             print(f"Deleted old backup: {folder}")
 
-# ─────────────────────────────────────────────
-# Run the full backup
-# ─────────────────────────────────────────────
 def run_backup():
     print("="*50)
     print("FRAUD DETECTION SYSTEM — BACKUP STARTED")
